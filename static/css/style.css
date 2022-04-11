@@ -1,0 +1,79 @@
+* {
+    --accent: #d81b60;
+    border-radius: 5px;
+}
+
+input[type=checkbox]{
+    margin:0 12px 0 0;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+}
+.upload-form {
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#upload-textarea {
+    width: 100%;
+    max-width: 100%;
+    height: 200px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    margin: 1rem 0;
+    padding: 0.5rem;
+    border-width: 1px;
+}
+
+@media screen and (min-width: 600px) {
+    #upload-textarea {
+        height: 400px;
+    }
+}
+
+#result {
+    display: none;
+    padding: 1.5rem 1.75rem;
+    border-width: 1px;
+    border-style: solid;
+    margin: 1rem auto 0 auto;
+    background-color: #d6ffd9;
+    border-color: green;
+}
+
+#result h3 {
+    margin: 0 auto 1rem auto;
+    text-align: center;
+}
+
+#result a {
+    font-size: 1rem;
+}
+
+
+#form-upload-error {
+    display: none;
+    padding: 1rem 0.75rem;
+    border-width: 1px;
+    border-style: solid;
+    background-color: #ffa6a6;
+    border-color: red;
+}
+
+button {
+    cursor: pointer;
+    display: inline-block;
+    padding: 0.35em 1.2em;
+    border-radius: 0.2em;
+    box-sizing: border-box;
+    text-align: center;
+    transition: all 0.2s;
+    border-width: 0.1em;
+    border-style: solid;
+}
+
+.button-row {
+    margin-left: auto;
+}
