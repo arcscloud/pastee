@@ -2,7 +2,9 @@ package store
 
 import (
     "database/sql"
-    _ "github.com/mattn/go-sqlite3"
+    "fmt"
+    _ "github.com/go-sql-driver/mysql"
+    "github.com/joho/godotenv"
     "log"
     "os"
     "time"
@@ -23,22 +25,23 @@ type Paste struct {
 }
 
 func New() Store {
-    dbDir := "data"
-    if _, err := os.Stat(dbDir); os.IsNotExist(err) {
-        os.Mkdir(dbDir, os.ModePerm)
-    }
+    _ = godotenv.Load()
 
-    ctx, err := sql.Open("sqlite3", dbDir+"/app.db")
+    dsn := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s", os.Getenv("DB_USER"), os.Getenv("DB_PASS"), os.Getenv("DB_HOST"), os.Getenv("DB_NAME"))
+    ctx, err := sql.Open("mysql", dsn)
     if err != nil {
         log.Fatal(err)
     }
 
     init := []string{
         `CREATE TABLE IF NOT EXISTS pastes (
-            id TEXT PRIMARY KEY,
+            id INT NOT NULL AUTO_INCREMENT,
+            paste_id TEXT,
             hash TEXT NULL,
             content TEXT,
-            created_at DATETIME
+            created_at DATETIME,
+            
+            PRIMARY KEY (ID)
         )
         `,
     }
@@ -55,7 +58,7 @@ func New() Store {
 }
 
 func (d db) GetPaste(id string) (Paste, error) {
-    stmt, err := d.ctx.Prepare("SELECT content, hash FROM pastes WHERE id = ?")
+    stmt, err := d.ctx.Prepare("SELECT content, hash FROM pastes WHERE paste_id = ?")
     if err != nil {
         return Paste{}, err
     }
@@ -76,7 +79,7 @@ func (d db) GetPaste(id string) (Paste, error) {
 
 func (d db) SavePaste(id string, hash string, content string) error {
     _, err := d.ctx.Exec(
-        `INSERT INTO pastes (id, hash, content, created_at) VALUES(?, ?, ?, ?)`,
+        `INSERT INTO pastes (paste_id, hash, content, created_at) VALUES(?, ?, ?, ?)`,
         id,
         hash,
         content,
