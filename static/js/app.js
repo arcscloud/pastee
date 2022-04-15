@@ -1,7 +1,5 @@
 'use strict';
 
-const baseUrl = document.location.toString().replace(/\/$/, '');
-
 function displayResult(resultId, hash) {
   clearError();
   clearResult();
@@ -50,7 +48,7 @@ document.getElementById('upload').addEventListener('click', (evt) => {
   const textToUpload = document.getElementById('upload-textarea').value;
   const hashPaste = document.getElementById('hash-paste').checked;
 
-  logpaste
+  pastee
     .uploadText({ content: textToUpload, hash: hashPaste })
     .then(({ id, hash }) => {
       displayResult(id, hash);

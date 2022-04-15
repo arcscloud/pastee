@@ -35,8 +35,8 @@
       });
   }
 
-  if (!window.hasOwnProperty('logpaste')) {
-    window.logpaste = {};
+  if (!window.hasOwnProperty('pastee')) {
+    window.pastee = {};
   }
-  window.logpaste.uploadText = uploadText;
+  window.pastee.uploadText = uploadText;
 })(window);
