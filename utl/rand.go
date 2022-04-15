@@ -1,4 +1,4 @@
-package rand
+package utl
 
 import (
     "math/rand"

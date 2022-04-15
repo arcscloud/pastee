@@ -3,6 +3,11 @@
     border-radius: 5px;
 }
 
+body{
+    min-height: 100vh;
+}
+
+
 input[type=checkbox]{
     margin:0 12px 0 0;
     vertical-align: middle;
@@ -76,4 +81,10 @@ button {
 
 .button-row {
     margin-left: auto;
+}
+
+.v {
+    text-align: center;
+    font-size: .75rem;
+    border: 0;
 }

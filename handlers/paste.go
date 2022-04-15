@@ -2,7 +2,7 @@ package handlers
 
 import (
     "errors"
-    "github.com/arcs/pastee/rand"
+    "github.com/arcs/pastee/utl"
     "github.com/gin-gonic/gin"
     "github.com/gin-gonic/gin/binding"
     "log"
@@ -59,9 +59,9 @@ func (s defaultServer) pastePost(c *gin.Context) {
 
     hash := ""
     if pastePostRequest.Hash {
-        hash = rand.GenerateToken(32)
+        hash = utl.GenerateToken(32)
     }
-    id := rand.GenerateToken(8)
+    id := utl.GenerateToken(8)
     err = s.store.SavePaste(id, hash, pastePostRequest.Content)
     if err != nil {
         log.Printf("Error saving entry: %v\n", err)
