@@ -5,7 +5,6 @@ import (
     "github.com/arcs/pastee/utl"
     "github.com/gin-gonic/gin"
     "github.com/gin-gonic/gin/binding"
-    "log"
     "net/http"
 )
 
@@ -37,12 +36,16 @@ func (s defaultServer) pasteGet(c *gin.Context) {
         return
     }
     hash := c.Query("hash")
-    if paste.Hash != "" && hash != paste.Hash {
-        c.String(http.StatusNotFound, "%s", "paste not found")
-        return
+
+    content := paste.Content
+    if paste.Hashed {
+        decrypted, err := utl.AesDecryptCBC(paste.Content, hash)
+        if err == nil {
+            content = decrypted
+        }
     }
 
-    c.String(http.StatusOK, "%s", paste.Content)
+    c.String(http.StatusOK, "%s", content)
 }
 
 func (s defaultServer) pastePost(c *gin.Context) {
@@ -60,11 +63,16 @@ func (s defaultServer) pastePost(c *gin.Context) {
     hash := ""
     if pastePostRequest.Hash {
         hash = utl.GenerateToken(32)
+        pastePostRequest.Content, err = utl.AesEncryptCBC(pastePostRequest.Content, hash)
+        if err != nil {
+            c.AbortWithError(http.StatusInternalServerError, errors.New("error saving entry"))
+            return
+        }
     }
     id := utl.GenerateToken(8)
-    err = s.store.SavePaste(id, hash, pastePostRequest.Content)
+    hashed := hash != ""
+    err = s.store.SavePaste(id, pastePostRequest.Content, hashed)
     if err != nil {
-        log.Printf("Error saving entry: %v\n", err)
         c.AbortWithError(http.StatusInternalServerError, errors.New("error saving entry"))
         return
     }

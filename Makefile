@@ -9,5 +9,5 @@ docker: build
 
 prod: docker
 
-dev: build
-		./server
+dev:
+		go build -o server -ldflags "-X $(PKG).Hash=$(GIT_COMMIT)" && ./server

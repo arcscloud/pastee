@@ -12,7 +12,7 @@ import (
 
 type Store interface {
     GetPaste(id string) (Paste, error)
-    SavePaste(id string, hash string, contents string) error
+    SavePaste(id string, contents string, hashed bool) error
 }
 
 type db struct {
@@ -22,6 +22,7 @@ type db struct {
 type Paste struct {
     Hash    string
     Content string
+    Hashed  bool
 }
 
 func New() Store {
@@ -37,8 +38,8 @@ func New() Store {
         `CREATE TABLE IF NOT EXISTS pastes (
             id INT NOT NULL AUTO_INCREMENT,
             paste_id TEXT,
-            hash TEXT NULL,
             content TEXT,
+            hashed TINYINT,
             created_at DATETIME,
             
             PRIMARY KEY (ID)
@@ -58,31 +59,31 @@ func New() Store {
 }
 
 func (d db) GetPaste(id string) (Paste, error) {
-    stmt, err := d.ctx.Prepare("SELECT content, hash FROM pastes WHERE paste_id = ?")
+    stmt, err := d.ctx.Prepare("SELECT content, hashed FROM pastes WHERE paste_id = ?")
     if err != nil {
         return Paste{}, err
     }
     defer stmt.Close()
 
     var contents string
-    var hash string
-    err = stmt.QueryRow(id).Scan(&contents, &hash)
+    var hashed bool
+    err = stmt.QueryRow(id).Scan(&contents, &hashed)
     if err != nil {
         return Paste{}, err
     }
 
     return Paste{
-        Hash:    hash,
         Content: contents,
+        Hashed:  hashed,
     }, nil
 }
 
-func (d db) SavePaste(id string, hash string, content string) error {
+func (d db) SavePaste(id string, content string, hashed bool) error {
     _, err := d.ctx.Exec(
-        `INSERT INTO pastes (paste_id, hash, content, created_at) VALUES(?, ?, ?, ?)`,
+        `INSERT INTO pastes (paste_id, content, hashed, created_at) VALUES(?, ?, ?, ?)`,
         id,
-        hash,
         content,
+        hashed,
         time.Now().Format("2006-01-02T15:04:05"),
     )
     return err
