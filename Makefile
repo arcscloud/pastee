@@ -8,3 +8,6 @@ docker: build
 		docker build . --platform linux/arm64/v8 --tag arcscloud/pastee
 
 prod: docker
+
+dev: build
+		./server
