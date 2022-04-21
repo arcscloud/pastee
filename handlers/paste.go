@@ -12,12 +12,12 @@ const MaxPasteCharacters = 2 * 1000 * 1000
 
 type PastePostRequest struct {
     Content string `json:"content"`
-    Hash    bool   `json:"hash"`
+    Encrypt bool   `json:"encrypt"`
 }
 
 type PastePostResponse struct {
-    Id   string `json:"id"`
-    Hash string `json:"hash"`
+    Id  string `json:"id"`
+    Key string `json:"key"`
 }
 
 func (s defaultServer) pasteOptions() http.HandlerFunc {
@@ -35,11 +35,11 @@ func (s defaultServer) pasteGet(c *gin.Context) {
         c.String(http.StatusNotFound, "%s", "paste not found")
         return
     }
-    hash := c.Query("hash")
+    key := c.Query("key")
 
     content := paste.Content
     if paste.Hashed {
-        decrypted, err := utl.AesDecryptCBC(paste.Content, hash)
+        decrypted, err := utl.AesDecryptCBC(paste.Content, key)
         if err == nil {
             content = decrypted
         }
@@ -60,25 +60,25 @@ func (s defaultServer) pastePost(c *gin.Context) {
         return
     }
 
-    hash := ""
-    if pastePostRequest.Hash {
-        hash = utl.GenerateToken(32)
-        pastePostRequest.Content, err = utl.AesEncryptCBC(pastePostRequest.Content, hash)
+    key := ""
+    if pastePostRequest.Encrypt {
+        key = utl.GenerateToken(32)
+        pastePostRequest.Content, err = utl.AesEncryptCBC(pastePostRequest.Content, key)
         if err != nil {
             c.AbortWithError(http.StatusInternalServerError, errors.New("error saving entry"))
             return
         }
     }
     id := utl.GenerateToken(8)
-    hashed := hash != ""
-    err = s.store.SavePaste(id, pastePostRequest.Content, hashed)
+    encrypted := key != ""
+    err = s.store.SavePaste(id, pastePostRequest.Content, encrypted)
     if err != nil {
         c.AbortWithError(http.StatusInternalServerError, errors.New("error saving entry"))
         return
     }
     response := PastePostResponse{
-        Id:   id,
-        Hash: hash,
+        Id:  id,
+        Key: key,
     }
     c.JSON(http.StatusOK, response)
 }

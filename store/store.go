@@ -12,7 +12,7 @@ import (
 
 type Store interface {
     GetPaste(id string) (Paste, error)
-    SavePaste(id string, contents string, hashed bool) error
+    SavePaste(id string, contents string, encrypted bool) error
 }
 
 type db struct {
@@ -39,7 +39,7 @@ func New() Store {
             id INT NOT NULL AUTO_INCREMENT,
             paste_id TEXT,
             content TEXT,
-            hashed TINYINT,
+            encrypted TINYINT,
             created_at DATETIME,
             
             PRIMARY KEY (ID)
@@ -59,31 +59,31 @@ func New() Store {
 }
 
 func (d db) GetPaste(id string) (Paste, error) {
-    stmt, err := d.ctx.Prepare("SELECT content, hashed FROM pastes WHERE paste_id = ?")
+    stmt, err := d.ctx.Prepare("SELECT content, encrypted FROM pastes WHERE paste_id = ?")
     if err != nil {
         return Paste{}, err
     }
     defer stmt.Close()
 
     var contents string
-    var hashed bool
-    err = stmt.QueryRow(id).Scan(&contents, &hashed)
+    var encrypted bool
+    err = stmt.QueryRow(id).Scan(&contents, &encrypted)
     if err != nil {
         return Paste{}, err
     }
 
     return Paste{
         Content: contents,
-        Hashed:  hashed,
+        Hashed:  encrypted,
     }, nil
 }
 
-func (d db) SavePaste(id string, content string, hashed bool) error {
+func (d db) SavePaste(id string, content string, encrypted bool) error {
     _, err := d.ctx.Exec(
-        `INSERT INTO pastes (paste_id, content, hashed, created_at) VALUES(?, ?, ?, ?)`,
+        `INSERT INTO pastes (paste_id, content, encrypted, created_at) VALUES(?, ?, ?, ?)`,
         id,
         content,
-        hashed,
+        encrypted,
         time.Now().Format("2006-01-02T15:04:05"),
     )
     return err
