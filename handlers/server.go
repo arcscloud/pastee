@@ -5,6 +5,12 @@ import (
     "github.com/gin-gonic/gin"
 )
 
+var Engine *gin.Engine
+
+func init() {
+    Engine = gin.Default()
+}
+
 type Server interface {
     Router() *gin.Engine
 }
@@ -20,7 +26,7 @@ func (s defaultServer) Router() *gin.Engine {
 
 func New() Server {
     s := defaultServer{
-        router: gin.Default(),
+        router: Engine,
         store:  store.New(),
     }
     s.routes()
