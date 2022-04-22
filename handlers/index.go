@@ -14,6 +14,6 @@ func (s defaultServer) index(c *gin.Context) {
     c.HTML(http.StatusOK, "index", gin.H{
         "Title":    "Pastee",
         "Subtitle": "Securely share pastes!",
-        "Key":      version.Hash[:8],
+        "Hash":     version.Hash[:8],
     })
 }
