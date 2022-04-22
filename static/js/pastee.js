@@ -30,7 +30,7 @@
       .then((data) => {
         return {
           id: data.id,
-          hash: data.hash,
+          key: data.key,
         };
       });
   }

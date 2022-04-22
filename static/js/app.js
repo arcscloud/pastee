@@ -1,14 +1,14 @@
 'use strict';
 
-function displayResult(resultId, hash) {
+function displayResult(resultId, key) {
   clearError();
   clearResult();
 
   const resultDiv = document.getElementById('result');
 
   let resultUrl = `${document.location}paste/${resultId}`;
-  if (hash !== '') {
-    resultUrl += `?hash=${hash}`;
+  if (key !== '') {
+    resultUrl += `?key=${key}`;
   }
 
   const header = document.createElement('h3');
@@ -46,12 +46,12 @@ function displayError(error) {
 
 document.getElementById('upload').addEventListener('click', (evt) => {
   const textToUpload = document.getElementById('upload-textarea').value;
-  const hashPaste = document.getElementById('hash-paste').checked;
+  const encryptPaste = document.getElementById('encrypt-paste').checked;
 
   pastee
-    .uploadText({ content: textToUpload, hash: hashPaste })
-    .then(({ id, hash }) => {
-      displayResult(id, hash);
+    .uploadText({ content: textToUpload, encrypt: encryptPaste })
+    .then(({ id, key }) => {
+      displayResult(id, key);
     })
     .catch((error) => {
       clearResult();
