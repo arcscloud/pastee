@@ -2,10 +2,10 @@ PKG := github.com/arcs/pastee/version
 GIT_COMMIT := $(shell git rev-list -1 HEAD)
 
 build:
-		GOOS=linux GOARCH=arm64 go build -o server -tags prod -ldflags "-X $(PKG).Hash=$(GIT_COMMIT)"
+		go build -o server -tags prod -ldflags "-X $(PKG).Hash=$(GIT_COMMIT)"
 
 docker: build
-		docker build . --platform linux/arm64/v8 --tag arcscloud/pastee
+		docker build . --tag arcscloud/pastee
 
 prod: docker
 
