@@ -20,14 +20,6 @@ type PastePostResponse struct {
     Key string `json:"key"`
 }
 
-func (s defaultServer) pasteOptions() http.HandlerFunc {
-    return func(w http.ResponseWriter, r *http.Request) {
-        w.Header().Set("Access-Control-Allow-Origin", "*")
-        w.Header().Set("Access-Control-Allow-Methods", "GET, PUT")
-        w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-    }
-}
-
 func (s defaultServer) pasteGet(c *gin.Context) {
     id := c.Param("id")
     paste, err := s.store.GetPaste(id)
