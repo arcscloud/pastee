@@ -15,11 +15,25 @@ function displayResult(resultId, key) {
   header.innerText = 'Shareable link';
   resultDiv.appendChild(header);
 
-  const anchor = document.createElement('a');
-  anchor.href = resultUrl;
-  anchor.innerText = resultUrl;
-  anchor.target = '_blank';
-  resultDiv.appendChild(anchor);
+  // const anchor = document.createElement('a');
+  // anchor.href = resultUrl;
+  // anchor.innerText = resultUrl;
+  // anchor.target = '_blank';
+  // resultDiv.appendChild(anchor);
+  const input = document.createElement('input');
+  input.classList.add('result');
+  input.value = resultUrl;
+
+  const copy = document.createElement('button');
+  copy.classList.add('btn');
+  copy.innerHTML = 'Copy';
+  copy.addEventListener('click', function () {
+    navigator.clipboard.writeText(input.value);
+    copy.innerHTML = 'Copied!';
+  });
+
+  resultDiv.appendChild(input);
+  resultDiv.appendChild(copy);
 
   resultDiv.style.display = 'block';
 }
