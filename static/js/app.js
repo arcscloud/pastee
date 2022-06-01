@@ -15,11 +15,6 @@ function displayResult(resultId, key) {
   header.innerText = 'Shareable link';
   resultDiv.appendChild(header);
 
-  // const anchor = document.createElement('a');
-  // anchor.href = resultUrl;
-  // anchor.innerText = resultUrl;
-  // anchor.target = '_blank';
-  // resultDiv.appendChild(anchor);
   const input = document.createElement('input');
   input.classList.add('result');
   input.value = resultUrl;
@@ -61,9 +56,16 @@ function displayError(error) {
 document.getElementById('upload').addEventListener('click', (evt) => {
   const textToUpload = document.getElementById('upload-textarea').value;
   const encryptPaste = document.getElementById('encrypt-paste').checked;
+  const expirePaste = document.getElementById('expiry');
+
+  const pasteVal = {
+    content: textToUpload,
+    encrypt: encryptPaste,
+    expire: parseInt(expirePaste.options[expirePaste.selectedIndex].value),
+  };
 
   pastee
-    .uploadText({ content: textToUpload, encrypt: encryptPaste })
+    .uploadText(pasteVal)
     .then(({ id, key }) => {
       displayResult(id, key);
     })

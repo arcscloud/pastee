@@ -3,16 +3,17 @@ package store
 import (
     "database/sql"
     "fmt"
-    _ "github.com/go-sql-driver/mysql"
-    "github.com/joho/godotenv"
     "log"
     "os"
     "time"
+
+    _ "github.com/go-sql-driver/mysql"
+    "github.com/joho/godotenv"
 )
 
 type Store interface {
     GetPaste(id string) (Paste, error)
-    SavePaste(id string, contents string, encrypted bool) error
+    SavePaste(id string, contents string, encrypted bool, expireAt string) error
 }
 
 type db struct {
@@ -40,6 +41,7 @@ func New() Store {
             paste_id TEXT,
             content TEXT,
             encrypted TINYINT,
+            expire_at DATETIME,
             created_at DATETIME,
             
             PRIMARY KEY (ID)
@@ -78,12 +80,13 @@ func (d db) GetPaste(id string) (Paste, error) {
     }, nil
 }
 
-func (d db) SavePaste(id string, content string, encrypted bool) error {
+func (d db) SavePaste(id string, content string, encrypted bool, expireAt string) error {
     _, err := d.ctx.Exec(
-        `INSERT INTO pastes (paste_id, content, encrypted, created_at) VALUES(?, ?, ?, ?)`,
+        `INSERT INTO pastes (paste_id, content, encrypted, expire_at, created_at) VALUES(?, ?, ?, ?, ?)`,
         id,
         content,
         encrypted,
+        expireAt,
         time.Now().Format("2006-01-02T15:04:05"),
     )
     return err
