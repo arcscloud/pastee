@@ -6,6 +6,8 @@ import (
     "github.com/arcs/pastee/store"
 )
 
+var Engine *gin.Engine
+
 type Server interface {
     Router() *gin.Engine
 }
@@ -20,8 +22,9 @@ func (s defaultServer) Router() *gin.Engine {
 }
 
 func New() Server {
+    Engine = gin.Default()
     s := defaultServer{
-        router: gin.Default(),
+        router: Engine,
         store:  store.New(),
     }
     s.routes()
