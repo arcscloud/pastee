@@ -8,7 +8,6 @@ import (
     "time"
 
     _ "github.com/go-sql-driver/mysql"
-    "github.com/joho/godotenv"
 )
 
 type Store interface {
@@ -27,8 +26,6 @@ type Paste struct {
 }
 
 func New() Store {
-    _ = godotenv.Load()
-
     dsn := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s", os.Getenv("DB_USER"), os.Getenv("DB_PASS"), os.Getenv("DB_HOST"), os.Getenv("DB_NAME"))
     ctx, err := sql.Open("mysql", dsn)
     if err != nil {
