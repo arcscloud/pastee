@@ -10,9 +10,12 @@ import (
     "github.com/arcs/pastee/pkg/clean"
 )
 
+const CmdServer = "server"
+const CmdCleanup = "cleanup"
+
 func main() {
-    if len(os.Args) != 2 {
-        fmt.Println("Server must be called with exactly 1 argument. One of [server, cleanup]")
+    if len(os.Args) != 2 || (os.Args[1] != CmdServer && os.Args[1] != CmdCleanup) {
+        fmt.Printf("Server must be called with exactly 1 argument. One of [%s, %s]\n", CmdServer, CmdCleanup)
         os.Exit(1)
     }
 
@@ -23,11 +26,11 @@ func main() {
     }
 
     runMode := os.Args[1]
-    if runMode == "server" {
+    if runMode == CmdServer {
         s := handlers.New()
         s.Router().Run(":8888")
     }
-    if runMode == "cleanup" {
+    if runMode == CmdCleanup {
         c := clean.New()
         err := c.PerformCleanup()
         if err != nil {
