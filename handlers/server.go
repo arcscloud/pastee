@@ -1,15 +1,10 @@
 package handlers
 
 import (
-    "github.com/arcs/pastee/store"
     "github.com/gin-gonic/gin"
+
+    "github.com/arcs/pastee/store"
 )
-
-var Engine *gin.Engine
-
-func init() {
-    Engine = gin.Default()
-}
 
 type Server interface {
     Router() *gin.Engine
@@ -26,7 +21,7 @@ func (s defaultServer) Router() *gin.Engine {
 
 func New() Server {
     s := defaultServer{
-        router: Engine,
+        router: gin.Default(),
         store:  store.New(),
     }
     s.routes()
