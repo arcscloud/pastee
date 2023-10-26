@@ -30,6 +30,9 @@ input[type=checkbox], select{
     margin: 1rem 0;
     padding: 0.5rem;
     border-width: 1px;
+
+    font-family: monospace;
+    font-size: 0.90em;
 }
 
 @media screen and (min-width: 600px) {
