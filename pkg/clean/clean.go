@@ -34,7 +34,8 @@ func (d db) getPastes() ([]int64, error) {
 	date := time.Now().UTC().Format("2006-01-02T15:04:05")
 
 	// If expire_at is smaller than the current time, then the paste can be removed
-	stmt, err := d.ctx.Prepare("SELECT id FROM pastes WHERE expire_at < ?")
+	// If no expiry is set, the app saves the datetime as 1970-01-01T00:00:00
+	stmt, err := d.ctx.Prepare("SELECT id FROM pastes WHERE expire_at > '1970-01-01T00:00:00' and expire_at < ?")
 	if err != nil {
 		return nil, err
 	}
